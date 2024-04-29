@@ -1,8 +1,73 @@
-@model TModel
+@model List<Phone>
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Мобильные телефоны";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<h2>Мобильные телефоны</h2>
+
+<a class="btn btn-primary mb-3" asp-action="Create" asp-controller="Phone">Добавить смартфон</a>
+
+<div class="table_section">
+    @if (@Model.Count == 0)
+    {
+        <p>Смартфоны еще не добавлены</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Компания</th>
+                        <th scope="col">Стоимость</th>
+                        <th scope="col">Бренд</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var phone in @Model)
+                    {
+                        <tr>
+                            <td>@phone.Id</td>
+                            <td>@phone.Name</td>
+                            <td>@phone.Company</td>
+                            <td>@phone.Price</td>
+                            <td>@phone.BrandId</td>
+                            <td>
+                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-controller="Phone" asp-route-Id="@phone.Id">Редактировать</a>
+                                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Phone" asp-route-Id="@phone.Id">Удалить</a>
+                                @*<a class="btn btn-danger btn-sm" asp-action="Create" asp-controller="Order" asp-route-phoneId="@phone.Id">Заказать</a>*@
+                                <a class="btn btn-success btn-sm" asp-action="Create" asp-controller="PhoneReview" asp-route-phoneId="@phone.Id">Добавить отзыв</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                @if (phone.Reviews != null && phone.Reviews.Any())
+                                {
+                                    <h4>Отзывы:</h4>
+                                    <ul class="list-unstyled">
+                                        @foreach (var review in phone.Reviews)
+                                        {
+                                            <li>
+                                                <strong>@review.UserName:</strong> @review.ReviewText (Оценка: @review.Rating)
+                                            </li>
+                                        }
+                                    </ul>
+                                    <p>Средняя оценка: @phone.Reviews.Average(r => r.Rating)</p>
+                                }
+                                else
+                                {
+                                    <p>Отзывов пока нет</p>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

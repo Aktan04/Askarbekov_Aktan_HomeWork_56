@@ -1,8 +1,42 @@
-@model TModel
+@model Phone
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Добавить устройство";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<div class="container">
+    <h2>Заполните форму для добавления устройства</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                @Html.ValidationSummary(true)
+                @await Html.PartialAsync("_CreateEditForm", new Phone())
+                <div class="form-group">
+                    <label for="BrandId">Бренд:</label>
+                    @if (ViewBag.Brands != null)
+                    {
+                        <select asp-for="BrandId" class="form-control">
+                            <option value="">-- Выберите бренд --</option>
+                            @foreach (var brand in ViewBag.Brands)
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        </select>
+                    }
+
+                    <span asp-validation-for="BrandId" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
