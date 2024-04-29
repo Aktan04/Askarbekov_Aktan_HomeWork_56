@@ -1,4 +1,5 @@
 using AuthProduct.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthProduct.Controllers;
@@ -12,17 +13,18 @@ public class BrandController : Controller
         _db = db;
     }
 
+    [Authorize(Roles = "user")]
     public IActionResult Index()
     {
         var brands = _db.Brands.ToList();
         return View(brands);
     }
-    
+    [Authorize(Roles = "admin")]
     public IActionResult Create()
     {
         return View();
     }
-
+    
     [HttpPost]
     public IActionResult Create(Brand brand)
     {
@@ -31,6 +33,7 @@ public class BrandController : Controller
             ModelState.AddModelError("Name", "Бренд с таким названием уже существует!");
             return View(brand);
         }
+        brand.FoundationDate = brand.FoundationDate.ToUniversalTime();
         if (ModelState.IsValid)
         {
             _db.Brands.Add(brand);
@@ -39,7 +42,7 @@ public class BrandController : Controller
         }
         return View(brand);
     }
-    
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(int id)
     {
         var brand = _db.Brands.Find(id);
@@ -66,7 +69,7 @@ public class BrandController : Controller
         }
         return View(brand);
     }
-    
+    [Authorize(Roles = "admin")]
     public IActionResult Delete(int id)
     {
         var brand = _db.Brands.FirstOrDefault(b => b.Id == id);

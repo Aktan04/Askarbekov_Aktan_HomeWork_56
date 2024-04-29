@@ -1,4 +1,5 @@
 using AuthProduct.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,13 @@ public class OrderController : Controller
     {
         _db = db;
     }
-    
+    [Authorize(Roles = "user")]
     public IActionResult Index()
     {
         List<Order> orders = _db.Orders.Include(o => o.Phone).ToList();
         return View(orders);
     }
-    
+    [Authorize(Roles = "user")]
     public IActionResult Create(int phoneId)
     {
         Phone phone = _db.Phones.FirstOrDefault(p => p.Id == phoneId);

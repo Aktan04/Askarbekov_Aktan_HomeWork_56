@@ -1,8 +1,16 @@
+using AuthProduct.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddDbContext<MobileContext>(options => options.UseNpgsql(connection));
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie
+(options => { options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +30,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Phone}/{action=Index}/{id?}");
 
 app.Run();

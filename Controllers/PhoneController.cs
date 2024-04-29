@@ -1,4 +1,5 @@
 using AuthProduct.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ public class PhoneController : Controller
         List<Phone> phones = _db.Phones.Include(p => p.Reviews).ToList();
         return View(phones);
     }
-
+    [Authorize(Roles = "admin")]
     public IActionResult Create()
     {
         ViewBag.Brands = _db.Brands.ToList();
@@ -38,7 +39,7 @@ public class PhoneController : Controller
         ViewBag.Brands = _db.Brands.ToList();
         return View(phone);
     }
-    
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(int? id)
     {
         
@@ -66,7 +67,7 @@ public class PhoneController : Controller
         }
         return View(phone);
     }
-    
+    [Authorize(Roles = "admin")]
     public IActionResult Delete(int? id)
     {
         if (id != null)

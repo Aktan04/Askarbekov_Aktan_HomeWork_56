@@ -13,6 +13,7 @@ public class Phone
     [Range(100, 2000)]
     [Required]
     public int Price { get; set; }
+    public string? Description { get; set; }
     [BindNever]
     public ICollection<PhoneReview>? Reviews { get; set; }
     [Required(ErrorMessage = "Пожалуйста, выберите бренд")]
