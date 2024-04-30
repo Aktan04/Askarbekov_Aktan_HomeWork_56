@@ -13,7 +13,7 @@ public class PhoneReview
     [Required(ErrorMessage = "Пожалуйста, оцените телефон от 0 до 5")]
     [Range(0, 5, ErrorMessage = "Оценка должна быть от 0 до 5")]
     public int Rating { get; set; }
-
+    [Required]
     public string ReviewText { get; set; }
 
     [ForeignKey("Phone")]

@@ -16,13 +16,13 @@ public class OrderController : Controller
     [Authorize(Roles = "user, admin")]
     public IActionResult Index()
     {
-        List<Order> orders = _db.Orders.Include(o => o.Phone).ToList();
+        List<Order> orders = _db.Orders.Include(o => o.Phone).Include(u => u.User).ToList();
         if (User.Identity.IsAuthenticated)
         {
             if (User.IsInRole("user"))
             {
                 string userName = User.Identity.Name;
-                var user = _db.Users.FirstOrDefault(u => u.Email == userName);
+                var user = _db.Users.FirstOrDefault(u => u.UserName == userName);
                 orders = _db.Orders.Include(o => o.Phone).Where(o => o.Name == user.UserName).ToList();
             }
         }
@@ -32,23 +32,27 @@ public class OrderController : Controller
     public IActionResult Create(int phoneId)
     {
         Phone phone = _db.Phones.FirstOrDefault(p => p.Id == phoneId);
-        return View(new Order{Phone = phone});
+        User user = _db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+        return View(new Order{Phone = phone, User = user});
     }
     
     [HttpPost]
     public IActionResult Create(Order order)
     {
+        string userName = User.Identity.Name;
+        var user = _db.Users.FirstOrDefault(u => u.UserName == userName);
+        if (user != null)
+        {
+            order.Name = user.UserName;
+            order.UserId = user.Id;
+        }
+
+        order.DateOfCreating = DateTime.UtcNow;
         if (ModelState.IsValid)
         {
-            string userName = User.Identity.Name;
-            var user = _db.Users.FirstOrDefault(u => u.Email == userName);
-            if (user != null)
-            {
-                order.Name = user.UserName;
-                _db.Orders.Add(order);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            _db.Orders.Add(order);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         return View(order);

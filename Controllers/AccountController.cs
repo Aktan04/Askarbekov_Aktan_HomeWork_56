@@ -35,11 +35,11 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         { 
-            User? user = await _db.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+            User? user = await _db.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == model.Email || u.UserName == model.Email && u.Password == model.Password);
             if (user != null)
             {
                 await Authenticate(user); 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Phone");
             }
 
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
@@ -71,7 +71,7 @@ public class AccountController : Controller
                 {
                     await Authenticate(newUser);
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Phone");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
         }

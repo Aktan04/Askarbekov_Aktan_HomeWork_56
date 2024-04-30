@@ -10,8 +10,11 @@ public class Order
     [Required]
     public string Address { get; set; } 
     [Required]
-    public string ContactPhone { get; set; } 
+    public string ContactPhone { get; set; }
+    public DateTime? DateOfCreating { get; set; }
     
     public int PhoneId { get; set; } 
     public Phone? Phone { get; set; }
+    public int UserId { get; set; }
+    public User? User { get; set; }
 }
