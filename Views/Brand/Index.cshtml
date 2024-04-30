@@ -42,7 +42,7 @@
                         <div class="btn-group" role="group">
                             @if (User.IsInRole("admin"))
                             {
-                                <a asp-action="Edit" asp-controller="Brand" asp-route-Id="@brand.Id" class="btn btn-danger">Редактировать</a>
+                                <a asp-action="Edit" asp-controller="Brand" asp-route-Id="@brand.Id" class="btn btn-success">Редактировать</a>
                                 <a asp-action="Delete" asp-controller="Brand" asp-route-id="@brand.Id" class="btn btn-danger">Удалить категорию</a>
                             }
                         </div>

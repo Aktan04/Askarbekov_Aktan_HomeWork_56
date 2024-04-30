@@ -60,7 +60,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            User user = await _db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            User user = await _db.Users.FirstOrDefaultAsync(u => u.Email == model.Email || u.UserName == model.UserName);
             if (user == null)
             {
                 Role role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == "user");
@@ -73,7 +73,7 @@ public class AccountController : Controller
                 }
                 return RedirectToAction("Index", "Phone");
             }
-            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+            ModelState.AddModelError("", "Некорректные логин и(или) пароль или пользователь с таким именем или email существует");
         }
 
         return View(model);

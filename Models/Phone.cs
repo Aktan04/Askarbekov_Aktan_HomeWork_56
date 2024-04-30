@@ -8,7 +8,6 @@ public class Phone
 {
     public int Id { get; set; }
     [Required(ErrorMessage = "Поле 'Наименование' обязательно для заполнения")]
-    [Remote(action: "CheckPhoneName", controller: "Validation", ErrorMessage = "Телефон с этим названием уже существует")]
     public string Name { get; set; }
     [Required(ErrorMessage = "Поле 'Компания' обязательно для заполнения")]
     public string Company { get; set; }

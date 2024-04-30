@@ -29,6 +29,11 @@ public class PhoneController : Controller
     [HttpPost]
     public IActionResult Create(Phone phone)
     {
+        if (_db.Phones.Any(c => c.Name == phone.Name))
+        {
+            ModelState.AddModelError("Name", "Телефон с таким названием уже существует!");
+            return View(phone);
+        }
         if (ModelState.IsValid)
         {
             _db.Phones.Add(phone);
@@ -56,8 +61,13 @@ public class PhoneController : Controller
     }
     
     [HttpPost]
-    public IActionResult Edit(Phone phone)
+    public IActionResult Edit(Phone phone, int id)
     {
+        if (_db.Phones.Any(c => c.Name == phone.Name && c.Id != id))
+        {
+            ModelState.AddModelError("Name", "Телефон с таким названием уже существует!");
+            return View(phone);
+        }
         ViewBag.Brands = _db.Brands.ToList();
         phone.DateOfEditing = DateTime.UtcNow;
         if (ModelState.IsValid)

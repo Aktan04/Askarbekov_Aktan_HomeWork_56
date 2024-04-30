@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
-
 namespace AuthProduct.Models;
 
 public class User 
@@ -11,5 +8,5 @@ public class User
     public string Password { get; set; }
     
     public int? RoleId { get; set; }
-    public Role? Role { get; set; }//Make nullable?
+    public Role? Role { get; set; }
 }
