@@ -17,7 +17,7 @@ public class MobileContext : DbContext
     {
         modelBuilder.Entity<Role>().HasData(new Role {Id = 1, Name = "admin"});
         modelBuilder.Entity<Role>().HasData(new Role {Id = 2, Name = "user"});
-        modelBuilder.Entity<User>().HasData(new User {Id = 1, Email = "admin@admin.admin", Password = "admin", RoleId = 1});
+        modelBuilder.Entity<User>().HasData(new User {Id = 1, UserName = "admin",Email = "admin@admin.admin", Password = "admin", RoleId = 1});
         base.OnModelCreating(modelBuilder);
     }
 }

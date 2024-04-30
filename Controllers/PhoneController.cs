@@ -16,7 +16,7 @@ public class PhoneController : Controller
     
     public IActionResult Index()
     {
-        List<Phone> phones = _db.Phones.Include(p => p.Reviews).ToList();
+        List<Phone> phones = _db.Phones.Include(b => b.Brand).ToList();
         return View(phones);
     }
     [Authorize(Roles = "admin")]
@@ -59,6 +59,7 @@ public class PhoneController : Controller
     public IActionResult Edit(Phone phone)
     {
         ViewBag.Brands = _db.Brands.ToList();
+        phone.DateOfEditing = DateTime.UtcNow;
         if (ModelState.IsValid)
         {
             _db.Phones.Update(phone);
@@ -95,5 +96,16 @@ public class PhoneController : Controller
             }
         }
         return NotFound();
+    }
+    [Authorize(Roles = "admin, user")]
+    public IActionResult Details(int id)
+    {
+        var product = _db.Phones.Include(r => r.Reviews).Include(b=>b.Brand).FirstOrDefault(p => p.Id == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+        
+        return View(product);
     }
 }

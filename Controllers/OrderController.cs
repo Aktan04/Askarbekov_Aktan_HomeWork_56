@@ -13,10 +13,19 @@ public class OrderController : Controller
     {
         _db = db;
     }
-    [Authorize(Roles = "user")]
+    [Authorize(Roles = "user, admin")]
     public IActionResult Index()
     {
         List<Order> orders = _db.Orders.Include(o => o.Phone).ToList();
+        if (User.Identity.IsAuthenticated)
+        {
+            if (User.IsInRole("user"))
+            {
+                string userName = User.Identity.Name;
+                var user = _db.Users.FirstOrDefault(u => u.Email == userName);
+                orders = _db.Orders.Include(o => o.Phone).Where(o => o.Name == user.UserName).ToList();
+            }
+        }
         return View(orders);
     }
     [Authorize(Roles = "user")]
@@ -31,9 +40,15 @@ public class OrderController : Controller
     {
         if (ModelState.IsValid)
         {
-            _db.Orders.Add(order);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            string userName = User.Identity.Name;
+            var user = _db.Users.FirstOrDefault(u => u.Email == userName);
+            if (user != null)
+            {
+                order.Name = user.UserName;
+                _db.Orders.Add(order);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
         }
 
         return View(order);

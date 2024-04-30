@@ -13,5 +13,5 @@ public class Order
     public string ContactPhone { get; set; } 
     
     public int PhoneId { get; set; } 
-    public Phone Phone { get; set; }
+    public Phone? Phone { get; set; }
 }

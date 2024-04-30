@@ -13,7 +13,7 @@ public class BrandController : Controller
         _db = db;
     }
 
-    [Authorize(Roles = "user")]
+    [Authorize(Roles = "admin, user")]
     public IActionResult Index()
     {
         var brands = _db.Brands.ToList();
@@ -61,6 +61,7 @@ public class BrandController : Controller
             ModelState.AddModelError("Name", "Категория с таким названием уже существует!");
             return View(brand);
         }
+        brand.FoundationDate = brand.FoundationDate.ToUniversalTime();
         if (ModelState.IsValid)
         {
             _db.Update(brand);

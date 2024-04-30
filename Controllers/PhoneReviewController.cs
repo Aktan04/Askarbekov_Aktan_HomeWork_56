@@ -1,4 +1,5 @@
 using AuthProduct.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthProduct.Controllers;
@@ -11,7 +12,7 @@ public class PhoneReviewController : Controller
     {
         _context = context;
     }
-
+    [Authorize(Roles = "user")]
     public IActionResult Create(int phoneId)
     {
         ViewBag.PhoneId = phoneId;

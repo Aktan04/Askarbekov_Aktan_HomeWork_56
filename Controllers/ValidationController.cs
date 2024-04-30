@@ -22,4 +22,16 @@ public class ValidationController : Controller
 
         return true;
     }
+
+    [AcceptVerbs("GET", "POST")]
+    public bool CheckPhoneName(string name)
+    {
+        Phone phone = _context.Phones.FirstOrDefault(p => p.Name == name);
+        if (phone != null)
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

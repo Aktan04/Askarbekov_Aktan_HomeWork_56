@@ -3,6 +3,7 @@ using System;
 using AuthProduct.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AuthProduct.Migrations
 {
     [DbContext(typeof(MobileContext))]
-    partial class MobileContextModelSnapshot : ModelSnapshot
+    [Migration("20240429133554_AddDescriptionAndDateOfEditing")]
+    partial class AddDescriptionAndDateOfEditing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,10 +192,6 @@ namespace AuthProduct.Migrations
                     b.Property<int?>("RoleId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
@@ -205,8 +204,7 @@ namespace AuthProduct.Migrations
                             Id = 1,
                             Email = "admin@admin.admin",
                             Password = "admin",
-                            RoleId = 1,
-                            UserName = "admin"
+                            RoleId = 1
                         });
                 });
 

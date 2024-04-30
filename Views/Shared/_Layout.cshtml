@@ -21,9 +21,12 @@
                 <ul class="navbar-nav flex-grow-1">
                     @if (User.Identity.IsAuthenticated)
                     {
-                       <li class="nav-item">
-                           <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Выход</a>
-                       </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Выход</a>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link text-dark">Привет, @User.Identity.Name!</span>
+                        </li>
                     }
                     else
                     {
@@ -34,27 +37,37 @@
                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
                        </li>
                     }
-                    @*@if (User.Identity.IsAuthenticated)
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Phone" asp-action="Index">Телефоны</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        
+                        if (User.IsInRole("admin") || User.IsInRole("user"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Заказы</a>
+                            </li>
+                        }
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("admin") || User.IsInRole("user"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Бренды</a>
+                            </li>
+                        }
+                    }
+                    @if (User.Identity.IsAuthenticated)
                     {
                         if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Пользователи</a>
                             </li>
                         }
-                    }*@
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Phone" asp-action="Index">Телефоны</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Заказы</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Бренды</a>
-                    </li>
-
+                    }
                 </ul>
             </div>
         </div>

@@ -13,15 +13,49 @@
             <ul class="list-group">
                 <li class="list-group-item"><strong>Name:</strong> @Model.Name</li>
                 <li class="list-group-item"><strong>Price:</strong> @Model.Price</li>
+                <li class="list-group-item"><strong>Company:</strong> @Model.Company</li>
+                <li class="list-group-item"><strong>Brand:</strong> @Model.Brand.Name</li>
+                @if (Model.DateOfEditing != null)
+                {
+                    <li class="list-group-item"><strong>Date of editing:</strong> @Model.DateOfEditing</li>
+                }
                 @if (Model.Description != null)
                 {
                     <li class="list-group-item"><strong>Description:</strong> @Model.Description</li>
                 }
                 else
                 {
-                    <li class="list-group-item"><strong>Описаниe к сожалению пока не добавили</strong></li>
+                    <li class="list-group-item"><strong>Description:</strong> Описаниe к сожалению пока не добавили</li>
                 }
             </ul>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                <h4>Отзывы:</h4>
+                <ul class="list-unstyled">
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <li class="mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@review.UserName</h5>
+                                    <p class="card-text">@review.ReviewText</p>
+                                    <p class="card-text"><small class="text-muted">Оценка: @review.Rating</small></p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                <p>Средняя оценка: @Model.Reviews.Average(r => r.Rating)</p>
+            }
+            else
+            {
+                <p>Отзывов пока нет</p>
+            }
         </div>
     </div>
 </div>

@@ -2,22 +2,28 @@ using System.Security.Claims;
 using AuthProduct.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthProduct.Controllers;
 
 public class AccountController : Controller
-{
-     private MobileContext _db;
+{ 
+    private MobileContext _db;
 
-     public AccountController(MobileContext db)
-     {
-         _db = db;
-     }
+    public AccountController(MobileContext db)
+    {
+        _db = db;
+    }
 
+    [Authorize(Roles = "admin")]
+    public IActionResult Index()
+    {
+        var users = _db.Users.ToList();
+        return View(users);
+    }
     [HttpGet]
-
     public IActionResult Login()
     {
        return View();
@@ -32,7 +38,7 @@ public class AccountController : Controller
             User? user = await _db.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
             if (user != null)
             {
-                await Authenticate(user); // аутентификация
+                await Authenticate(user); 
                 return RedirectToAction("Index", "Home");
             }
 
@@ -58,10 +64,13 @@ public class AccountController : Controller
             if (user == null)
             {
                 Role role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == "user");
-                User newUser = new User { Email = model.Email, Password = model.Password, RoleId = role.Id, Role = role};
+                User newUser = new User { Email = model.Email, Password = model.Password,UserName = model.UserName, RoleId = role.Id, Role = role};
                 await _db.Users.AddAsync(newUser);
                 await _db.SaveChangesAsync();
-                await Authenticate(newUser);
+                if (!User.IsInRole("admin"))
+                {
+                    await Authenticate(newUser);
+                }
                 return RedirectToAction("Index", "Home");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
@@ -75,7 +84,7 @@ public class AccountController : Controller
     { 
         var claims = new List<Claim>
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+            new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
             new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
         };
 
@@ -91,7 +100,7 @@ public class AccountController : Controller
             new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddMinutes(1)//DateTimeOffSet.UtcNow
+                ExpiresUtc = DateTime.UtcNow.AddMinutes(10)
 
             }
         );
@@ -102,5 +111,64 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login", "Account");
+    }
+    
+    [Authorize(Roles = "admin")]
+    public IActionResult Delete(int? id)
+    {
+        if (id != null)
+        {
+            User user = _db.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                return View(user);
+            }
+        }
+        return NotFound();
+    }
+    
+    [HttpPost]
+    public IActionResult ConfirmDelete(int? id)
+    {
+        if (id != null)
+        {
+            User user = _db.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+        }
+        return NotFound();
+    }
+    
+    [Authorize(Roles = "admin")]
+    public IActionResult Edit(int? id)
+    {
+        if (id != null)
+        {
+            User user = _db.Users.FirstOrDefault(u => u.Id == id);
+            /*Role role = _db.Roles.FirstOrDefault(r => r.Id == user.RoleId);
+            user.Role = role;*/
+            if (user != null)
+            {
+                return View(user);
+            }
+        }
+        return NotFound();
+    }
+    
+    [HttpPost]
+    public IActionResult Edit(User user)
+    {
+        
+        if (ModelState.IsValid)
+        {
+            _db.Users.Update(user);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        return View(user);
     }
 }

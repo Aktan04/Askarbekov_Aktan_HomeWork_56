@@ -11,6 +11,7 @@ public class Brand
     public string Name { get; set; }
 
     [Required(ErrorMessage = "Поле 'Email' обязательно для заполнения")]
+    [DataType(DataType.EmailAddress)]
     [EmailAddress(ErrorMessage = "Некорректный адрес электронной почты")]
     public string Email { get; set; }
 
